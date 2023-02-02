@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path,include
 
 from django.contrib.auth import views as auth_views
 
@@ -7,9 +7,10 @@ from . import views
 
 
 urlpatterns = [
-	path('register/', views.registerPage, name="register"),
-	path('login/', views.loginPage, name="login"),  
+	path('register/', views.registerPage, name="register"), #template ma naam le bolaunalai 
+	path('login/', views.loginPage, name="login"), 
 	path('logout/', views.logoutUser, name="logout"),
+    path('api/', include('api.urls')),
 
     path('', views.home, name="home"),
     path('user/', views.userPage, name="user-page"),
@@ -17,14 +18,14 @@ urlpatterns = [
     path('account/', views.accountSettings, name="account"),
 
     path('products/', views.products, name='products'),
-    path('customer/<str:pk_test>/', views.customer, name="customer"),
+    path('customer/<str:pk_test>/', views.customer, name="customer"), #url lai dynamic banako re
 
     path('create_order/<str:pk>/', views.createOrder, name="create_order"),
-    path('update_order/<str:pk>/', views.updateOrder, name="update_order"),
+    path('update_order/<str:pk>/', views.updateOrder, name="update_order"),#dynamic href="{% url 'update_order' order.id %},(update order button)
     path('delete_order/<str:pk>/', views.deleteOrder, name="delete_order"),
 
     path('reset_password/',
-     auth_views.PasswordResetView.as_view(template_name="accounts/password_reset.html"),
+     auth_views.PasswordResetView.as_view(template_name="accounts/password_reset.html"),#default form ni deko hunxa django admin le
      name="reset_password"),
 
     path('reset_password_sent/', 

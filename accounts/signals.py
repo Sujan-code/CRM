@@ -15,4 +15,6 @@ def customer_profile(sender, instance, created, **kwargs):
 			)
 		print('Profile created!')
 
-post_save.connect(customer_profile, sender=User)
+post_save.connect(customer_profile, sender=User) #decorator bata pani milxa
+#admin ma profile created,profile updated yeta uta. senders receivers communicating
+#customer profile banauda teslai customer group ma halyaS

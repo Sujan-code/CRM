@@ -5,14 +5,14 @@ from django.contrib.auth.forms import UserCreationForm
 
 from django.contrib.auth import authenticate, login, logout
 
-from django.contrib import messages
+from django.contrib import messages #flask messages ko lagi
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 
 # Create your views here.
 from .models import *
-from .forms import OrderForm, CreateUserForm, CustomerForm
+from .forms import OrderForm, CreateUserForm, CustomerForm #register form
 from .filters import OrderFilter
 from .decorators import unauthenticated_user, allowed_users, admin_only
 
@@ -22,12 +22,12 @@ def registerPage(request):
 
     form = CreateUserForm()
     if request.method == 'POST':
-        form = CreateUserForm(request.POST)
+        form = CreateUserForm(request.POST) #through that data into the form & passing that post datd/form render garera data halya
         if form.is_valid():
             user = form.save()
             username = form.cleaned_data.get('username')
 
-            messages.success(request, 'Account was created for ' + username)
+            messages.success(request, 'Account was created for ' + username) #flash messages
 
             return redirect('login')
 
@@ -36,10 +36,10 @@ def registerPage(request):
 
 
 @unauthenticated_user
-def loginPage(request):
+def loginPage(request): #throwing request vanya k ho?
 
     if request.method == 'POST':
-        username = request.POST.get('username')
+        username = request.POST.get('username') #lets grab the username and password(template bata enter garya)
         password = request.POST.get('password')
 
         user = authenticate(request, username=username, password=password)
@@ -101,7 +101,7 @@ def accountSettings(request):
     form = CustomerForm(instance=customer)
 
     if request.method == 'POST':
-        form = CustomerForm(request.POST, request.FILES, instance=customer)
+        form = CustomerForm(request.POST, request.FILES, instance=customer) 
         if form.is_valid():
             form.save()
 
@@ -125,11 +125,11 @@ def customer(request, pk_test):
     orders = customer.order_set.all()
     order_count = orders.count()
 
-    myFilter = OrderFilter(request.GET, queryset=orders)
+    myFilter = OrderFilter(request.GET, queryset=orders) #pahila orders query garxa ani request(get) anusar filter garxa
     orders = myFilter.qs
 
     context = {'customer': customer, 'orders': orders, 'order_count': order_count,
-               'myFilter': myFilter}
+               'myFilter': myFilter} # pass them into the templates or contex dictionaries
     return render(request, 'accounts/customer.html', context)
 
 
@@ -137,14 +137,14 @@ def customer(request, pk_test):
 @allowed_users(allowed_roles=['admin'])
 def createOrder(request, pk):
     OrderFormSet = inlineformset_factory(
-        Customer, Order, fields=('product', 'status'), extra=10)
+        Customer, Order, fields=('product', 'status'), extra=10) #parent model,child model
     customer = Customer.objects.get(id=pk)
-    formset = OrderFormSet(queryset=Order.objects.none(), instance=customer)
+    formset = OrderFormSet(queryset=Order.objects.none(), instance=customer)# items prefilled hunna ani naya item haru order garna sakiyo
     #form = OrderForm(initial={'customer':customer})
     if request.method == 'POST':
         #print('Printing POST:', request.POST)
         form = OrderForm(request.POST)
-        formset = OrderFormSet(request.POST, instance=customer)
+        formset = OrderFormSet(request.POST, instance=customer) #customer chai pre filled aauna paryos
         if formset.is_valid():
             formset.save()
             return redirect('/')
@@ -157,7 +157,7 @@ def createOrder(request, pk):
 @allowed_users(allowed_roles=['admin'])
 def updateOrder(request, pk):
     order = Order.objects.get(id=pk)
-    form = OrderForm(instance=order)
+    form = OrderForm(instance=order) #pre filled field lyaunalai
     print('ORDER:', order)
     if request.method == 'POST':
 
@@ -178,5 +178,8 @@ def deleteOrder(request, pk):
         order.delete()
         return redirect('/')
 
-    context = {'item': order}
+    context = {'item': order} 
     return render(request, 'accounts/delete.html', context)
+
+#register garda automatic customer group ma jane banauna ni milxa register page ma logic lekhya thyo
+#nav bar ma gayara if user chai staff ho vane yo yo dekha natra nadekha vanna ni paiyo

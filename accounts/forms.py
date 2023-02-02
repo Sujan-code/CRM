@@ -5,19 +5,19 @@ from django import forms
 
 from .models import *
 
-class CustomerForm(ModelForm):
+class CustomerForm(ModelForm): #setting ma banako form
 	class Meta:
 		model = Customer
 		fields = '__all__'
 		exclude = ['user']
 
-class OrderForm(ModelForm):
+class OrderForm(ModelForm): #model ko naamaniform  inline form ho ta?
 	class Meta:
-		model = Order
+		model = Order #kun model ko lagi form banako ho
 		fields = '__all__'
 
 
-class CreateUserForm(UserCreationForm):
+class CreateUserForm(UserCreationForm): #register 
 	class Meta:
 		model = User
 		fields = ['username', 'email', 'password1', 'password2']
